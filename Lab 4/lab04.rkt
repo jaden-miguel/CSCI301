@@ -1,0 +1,55 @@
+#lang racket
+
+; Name: Jaden Ji Miguel
+; Date: Spring 2022
+; Purpose: CSCI301 lab4
+
+
+; nested-number-set=? function
+; we need to handle nested sets for subset?
+; fixes our lab3 issues
+(define (nested-number-set=? a b)
+  (cond [(and (number? a) (number? b)) (= a b)]
+        [(and (list? a) (list? b))     (set-equal? a b)]
+        [else                          #f]))
+
+
+; Tests if x is in L where L is a set, represented as a list
+(define (member? x L)
+  (if (null? L)
+      #f
+      (cond
+        [(nested-number-set=? x (car L)) #t]
+        (else (member? x (cdr L))))))
+
+; Test whether L1 is a subset of L2
+(define (subset? L1 L2)
+  (if (null? L1)
+      #t
+      (and (member? (car L1) L2)
+           (subset? (cdr L1) L2))))
+
+
+; Test whether L1 and L2 are equal
+(define (set-equal? L1 L2)
+  (and (subset? L1 L2)
+       (subset? L2 L1)))
+
+; Join two sets together recursively
+(define (union S1 S2)
+  (if (null? S1)
+      S2
+      (cond
+        [(member? (car S1)S2) (union (cdr S1)S2)]
+        (else (cons (car S1) (union (cdr S1)S2)))
+        )))
+
+; Return the intersection of two sets
+(define (intersect S1 S2)
+  (if (null? S1)
+      '()
+      (cond
+        [(member? (car S1)S2)
+         (cons (car S1) (intersect (cdr S1)S2))]
+        (else (intersect(cdr S1)S2))
+        )))

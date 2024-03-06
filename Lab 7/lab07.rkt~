@@ -1,0 +1,62 @@
+#lang racket
+
+; Name: Jaden Ji Miguel
+; Date: Spring 2022
+; Purpose: Lab 7 CSCI301
+
+; bag-difference function
+; returns difference (how many times it appears)
+(define (bag-difference first second)
+        (if (empty? second) first
+                (bag-difference (remove (car second) first) (cdr second))))
+
+
+; bag union function
+; broken down w/ helper functions
+(define (bag-union bag1 bag2)
+  (bag-union-help bag1 bag2 '())
+ )
+
+
+; bag union helper function
+(define (bag-union-help bag1 bag2 E)
+  (if (null? bag2)
+      (if (null? bag1)
+          E
+          bag1)
+      (if (null? bag1)
+          (if (>= (x-count (car bag2) E 0) (x-count (car bag2) bag2 0))
+              (bag-union-help bag1 (cdr bag2) E)
+              (bag-union-help bag1 bag2 (add-to (car bag2) E))
+          )
+          (bag-union-help (cdr bag1) bag2 (add-to (car bag1) E)))))
+
+
+; element count helper
+(define (x-count x Bag n)
+  (if (null? Bag)
+      n
+      (if (eqv? x (car Bag))
+          (x-count x (cdr Bag) (+ n 1))
+          (x-count x (cdr Bag) n))))
+
+
+
+; adds an x into a list
+(define (add-to x List)
+  (append List (list x))
+ )
+
+
+
+; bag-intersection function
+; results in a bag that contains the
+; minimum number of elements that are contained in the bag operands.
+(define (bag-intersection lst1 lst2)
+  (cond 
+    ((null? lst1) lst1)
+    ((null? lst2) lst2)
+    ((member (car lst1) lst2) 
+        (cons (car lst1) (bag-intersection (cdr lst1) 
+                            (remove (car lst1) lst2))))
+    (else (bag-intersection (cdr lst1) lst2))))
